@@ -39,5 +39,5 @@ Using the library
 Reference manual
 ---------
 
-1. [Github markdown reference] (RateReporter.md]
+1. [Github markdown reference] (RateReporter.md)
 2. Or you can generate HTML directly from the source using [jsdoc](http://usejsdoc.org/)
