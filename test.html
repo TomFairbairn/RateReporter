@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Solace Rate Reporter Library test</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta charset="utf-8"/>
+
+       <!-- Load Solace Web Messaging API for JavaScript -->
+    <script src="/Users/tfairbairn/dev/js/10.0/solclientjs-10.0.0/lib/solclient-debug.js"></script> 
+    
+        <!-- Load the RequestReply Guaranteed Requestor tutorial -->
+    <script src="RateReporter.js"></script>
+    
+    <script>    
+    window.onload = function () {
+        // create the requestor
+        reporter = new RateReporter();
+         
+        // Insert the URL of your message router web messaging interface here.
+        reporter.setUrl("ws://192.168.30.69/");
+        // If you are using a default VMR configuration, you can use "default" for these.
+        // If you are running against a cloud based VMR, you'll need to set up these on
+        // the message router.
+        reporter.setUserName("bridge-user");
+        reporter.setVpnName("Bridge");
+        reporter.setPassword("d");
+        
+        //  By default, this is "solace".  You can't MNR or VPN bridge routers with the same
+        // name, though, so you'll probably have changed these.  Use the "show routername"
+        // CLI command.
+        reporter.setPhysicalName("solace"); 
+        
+        // Set the SEMP version string your message router supports
+        reporter.setSempVersion("8_8VMR");
+
+        // Use a user-defined query.  If you want to use more, just call this again with another query.
+        reporter.addUserQuery("<show><version/></show>")
+        	     
+        // This is your application entry point - updates arrive here, associated with an object.
+        // In this case the object is the query you've specified.
+        reporter.setCb(function(object, rate){
+        	  // Update URL
+        	  document.getElementById("url").innerHTML = reporter.getUrl();
+        	  // Update version
+        	  document.getElementById("version").innerHTML = rate;
+        	  // Stop querying now we have the information we need.
+           	  reporter.finish();
+        })
+        
+        // Use a user-defined parsing of the SEMP response.  Return a single string.
+        reporter.setRateCb(function(response) {
+        	  var parser = new DOMParser();
+        	  var xmlDoc = reporter.parser.parseFromString(response, "text/xml");
+        	  var versionTag = xmlDoc.getElementsByTagName("current-load")[0];
+        	  var version = versionTag.childNodes[0].nodeValue
+        	  return version;
+        })
+              
+        reporter.connect();
+        
+      };
+    </script>
+    </head>
+    
+    <body>
+    
+    <H1>Simple user query example</H1>
+    This example illustrates sending a simple user defined query using the RateReporter library, 
+    and using a user defined parsing callback to extract the result.
+    <h2>VMR URL:</h2>
+    <div id="url">Please wait, connecting...</div>
+    <h2>VMR version:</h2>
+    <div id="version">Please wait, connecting...</div>
+    </body>
+ </html>
