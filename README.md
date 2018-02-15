@@ -4,8 +4,8 @@ RateReporter Solace Message Rate Reporting Library
 RateReporter is a simple Javascript library designed to make querying Solace routers for activity information simpler, especially from web pages.
 
 RateReporter:
-1. Opens a client connection to the message router;
-2. Periodically polls the message router with a pre-formatted SEMP v1 request;
+1. Opens a [Web Socket](https://en.wikipedia.org/wiki/WebSocket) client connection to the message router, using the Solace Javascript messaging API;
+2. Periodically polls the message router with a pre-formatted SEMP v1 request, using SEMP over the message bus;
 3. Parses the XML response;
 4. Returns the parsed response result to you via a callback.  This is typically a message rate - say the message rate over a VPN bridge.
 
@@ -14,16 +14,19 @@ In order for the SEMP response to be visible via a client connection, ensure [SE
 Installation
 -----------
 
-Simply include RateReporter.js in your html or however you wish to reference it.  The file [test.html](test.html) shows a simple installation - you can either just download the file directory or clone the whole repo.
+Download the Solace Javascript API - you will need to include this in your HTML. [test.html](test.html) shows you how to do this.
+
+Then, Simply include RateReporter.js in your html or however you wish to reference it.  The file [test.html](test.html) shows a simple installation - you can either just download the file directory or clone the whole repo.
+
+You will need to be able to connect the message VPN you want to use, and this message VPN must have the correct Semp over the message bus permissions mentioned above.
 
 Query Types
 -----------
 
-There are two canned query types:
+There are two canned query types, and a user-defined query:
 1. MNR.  This queries the MNR link to an OtherRouterPhysicalName for the message rates.  A list of physical router names is provided by calling RateReporter.addOtherRouterPhysicalName for each name.
 2. VPN bridges.  Just as for MNR links, VPN bridge client statistics are returned for each VPN bridge added with RateReporter.addBridgeName
-
-There is also a user defined query mechanism.  To use this, configure the query you wish to issue using RateReporter.addUserQuery.  These queries should be SEMP XML format strings, without the <rpc> tags.  You must then set the rate callback with RateReporter.setRateCb.
+3. There is also a user defined query mechanism.  To use this, configure the query you wish to issue using RateReporter.addUserQuery.  These queries should be SEMP XML format strings, without the <rpc> tags.  You must then set the rate callback with RateReporter.setRateCb.
 
 Using the library
 -----------------
@@ -39,5 +42,12 @@ Using the library
 Reference manual
 ---------
 
-1. [Github markdown reference] (RateReporter.md)
+1. See [Github markdown reference](RateReporter.md)
 2. Or you can generate HTML directly from the source using [jsdoc](http://usejsdoc.org/)
+
+Notes on SEMP
+----------
+
+RateReporter uses SEMP v1.  This is because SEMP v2 isn't yet able to get the required statistics.  Once SEMP v2 is able to do this, I will re-write this library.  It will be a lot easier!
+
+RateReporter uses SEMP over the message bus.  Rather than sending a SEMP request over http, it connects as a normal messaging client and uses the Javascript API to send in the SEMP requests just like a normal message, using the request-reply pattern.  This has the advantage of only needing normal client permissions, rather than the admin permissions needed for SEMP over http.
