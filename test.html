@@ -25,6 +25,17 @@
         reporter.setVpnName("Bridge");
         reporter.setPassword("d");
         
+        // Alternatively, set up the session properties manually.  This allows you to set
+        // session properties for things such as connection timeouts.
+//         var userSession = {
+//         	  url: "ws://192.168.30.69/",
+//         	  vpnName: "Bridge",
+//         	  userName: "bridge-user",
+//         	  password: "default",
+//         	  connectTimeoutInMsecs: 1000
+//         };
+//         reporter.setExternalSessionProps(userSession);
+        
         //  By default, this is "solace".  You can't MNR or VPN bridge routers with the same
         // name, though, so you'll probably have changed these.  Use the "show routername"
         // CLI command.
@@ -50,9 +61,13 @@
         // Use a user-defined parsing of the SEMP response.  Return a single string.
         reporter.setRateCb(function(response) {
         	  var parser = new DOMParser();
+        	  try {
         	  var xmlDoc = reporter.parser.parseFromString(response, "text/xml");
         	  var versionTag = xmlDoc.getElementsByTagName("current-load")[0];
         	  var version = versionTag.childNodes[0].nodeValue
+          } catch (error) {
+        	    return "Error! Response: " + response;
+          }
         	  return version;
         })
               

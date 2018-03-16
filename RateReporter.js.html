@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: RateReporter.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: RateReporter.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * @class 
  * @classdesc
  *  A Javascript library to query the message rate between to Solace routers using SEMP
@@ -162,9 +190,9 @@ var RateReporter = function() {
 
 	/**
 	 * Adds a user defined SEMP query to the list.  The query should be a string of XML in SEMP format.  Omit the
-	 * opening and closing <rpc> tags.
+	 * opening and closing &lt;rpc> tags.
 	 * Automatically sets the type of query to callback.
-	 * @param {string} query - the query to be executed in SEMP v1 XML format without <rpc> tags
+	 * @param {string} query - the query to be executed in SEMP v1 XML format without &lt;rpc> tags
 	 *  @function RateReporter#addUserQuery
 	 */
 	reporter.addUserQuery = function(query) {
@@ -347,8 +375,8 @@ var RateReporter = function() {
 			// Check user supplied connection information.
 			// I can't check all of the session properties a user might supply,
 			// so that is caveat emptor
-			if (routerConfig.url.lastIndexOf('ws://', 0) !== 0 && routerConfig.url.lastIndexOf('wss://', 0) !== 0 &&
-					routerConfig.url.lastIndexOf('http://', 0) !== 0 && routerConfig.url.lastIndexOf('https://', 0) !== 0) {
+			if (routerConfig.url.lastIndexOf('ws://', 0) !== 0 &amp;&amp; routerConfig.url.lastIndexOf('wss://', 0) !== 0 &amp;&amp;
+					routerConfig.url.lastIndexOf('http://', 0) !== 0 &amp;&amp; routerConfig.url.lastIndexOf('https://', 0) !== 0) {
 				console.log('RateReporter: Invalid protocol - please use one of ws://, wss://, http://, https://');
 				return;
 			}
@@ -373,7 +401,7 @@ var RateReporter = function() {
 		}
 		
 		if (reporter.queryType == reporter.queryTypeEnum.Callback
-				&& reporter.rateCb == null) {
+				&amp;&amp; reporter.rateCb == null) {
 			console.log("RateReporter: You've asked for a user callback query but haven't specified a rate callback.  Call RateReporter.setRateCb first");
 			reporterError.text = "No rate callback specified.  Call RateReporter.setRateCb";
 			reporterError.text = "";
@@ -521,9 +549,9 @@ var RateReporter = function() {
 		if (reporter.queryType == reporter.queryTypeEnum.MNR) {
 			routerConfig.otherRouterPhysicalNames.forEach(function(router) {
 				reporter.debug("SEMP query for router: " + router);
-				msg = reporter.creqteQueryMessage("<rpc semp-version='" + routerConfig.version + 
-						"'> <show> <cspf> <neighbor> <physical-router-name>" + 
-						router + "</physical-router-name> <stats></stats> </neighbor> </cspf> </show> </rpc>");
+				msg = reporter.creqteQueryMessage("&lt;rpc semp-version='" + routerConfig.version + 
+						"'> &lt;show> &lt;cspf> &lt;neighbor> &lt;physical-router-name>" + 
+						router + "&lt;/physical-router-name> &lt;stats>&lt;/stats> &lt;/neighbor> &lt;/cspf> &lt;/show> &lt;/rpc>");
 				reporter.requests.push({"router" : router, "message" : msg});
 			}) ;
 		}
@@ -531,9 +559,9 @@ var RateReporter = function() {
 			routerConfig.bridgeNames.forEach(function(bridge) {
 				reporter.debug("SEMP query for bridge: " + bridge);
 				msg = reporter.createQueryMessage(
-						"<rpc semp-version='" + routerConfig.version + 
-						"'> <show> <bridge> <bridge-name-pattern>" + bridge + "</bridge-name-pattern>"+
-						"<vpn-name-pattern>" + routerConfig.vpnName + "</vpn-name-pattern><stats/></bridge></show> </rpc>"
+						"&lt;rpc semp-version='" + routerConfig.version + 
+						"'> &lt;show> &lt;bridge> &lt;bridge-name-pattern>" + bridge + "&lt;/bridge-name-pattern>"+
+						"&lt;vpn-name-pattern>" + routerConfig.vpnName + "&lt;/vpn-name-pattern>&lt;stats/>&lt;/bridge>&lt;/show> &lt;/rpc>"
 				);
 				reporter.requests.push({"bridge" : bridge, "message" : msg});
 			}) ;
@@ -542,7 +570,7 @@ var RateReporter = function() {
 			// Call user code to create query
 			routerConfig.userQueries.forEach(function(query) {
 				reporter.debug("SEMP query for user callback: " + query);
-				var fullQuery = "<rpc semp-version='" + routerConfig.version + "'>" + query + "</rpc>";
+				var fullQuery = "&lt;rpc semp-version='" + routerConfig.version + "'>" + query + "&lt;/rpc>";
 				msg = reporter.createQueryMessage(fullQuery);
 				reporter.requests.push({"query" : query, "message" : msg});
 			});
@@ -645,4 +673,26 @@ var RateReporter = function() {
 	}
 
 	return reporter;
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="RateReporter.html">RateReporter</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Fri Mar 16 2018 14:54:15 GMT+0000 (GMT)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
